@@ -52,13 +52,27 @@ body {
 header {
     text-align: center;
     animation: fadeInDown 0.8s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.main-logo {
+    width: 64px;
+    height: 64px;
 }
 
 .logo {
     font-size: 3rem;
     font-weight: 800;
     letter-spacing: -1px;
-    margin-bottom: 0.5rem;
 }
 
 .logo span {

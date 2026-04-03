@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XDownloader - Vídeos sem limite e sem anúncios</title>
+    <meta name="description" content="XDownloader is a video downloader, allow to download videos with the best quality HD 1080p, 4K for free without installing software.">
+    <meta name="keywords" content="download facebook videos,facebook video downloader,download mp3 facebook,convert facebook to mp3">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>XDownloader - No limit videos. No ads. No popups</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,15 +14,18 @@
     <div class="glass-bg"></div>
     <div class="container">
         <header>
-            <h1 class="logo">X<span>Downloader</span></h1>
-            <p class="subtitle">Baixe vídeos do Facebook, Instagram, YouTube e mais — sem nenhum pop-up irritante.</p>
+            <div class="logo-wrapper">
+                <img src="favicon.png" alt="XDownloader Icon" class="main-logo">
+                <h1 class="logo">X<span>Downloader</span></h1>
+            </div>
+            <p class="subtitle">Download videos from Facebook, Instagram, YouTube and more.<br>without adds and popups.</p>
         </header>
 
         <main>
             <div class="input-card">
-                <input type="url" id="video-url" placeholder="Cole o link do vídeo aqui..." autocomplete="off">
+                <input type="url" id="video-url" placeholder="Paste video link here..." autocomplete="off">
                 <button id="fetch-btn">
-                    <span id="btn-text">Download</span>
+                    <span id="btn-text">Start</span>
                     <div id="btn-spinner" class="spinner hidden"></div>
                 </button>
             </div>
@@ -31,7 +37,7 @@
                     <img id="vid-thumb" src="" alt="Thumbnail">
                 </div>
                 <div class="vid-details">
-                    <h2 id="vid-title">Título do Vídeo</h2>
+                    <h2 id="vid-title">Video Title</h2>
                     <p id="vid-meta"><span id="vid-duration"></span> • <span id="vid-source"></span></p>
                     <div id="vid-download-options" class="download-options-container">
                         <!-- Buttons injected via JS -->
@@ -41,7 +47,7 @@
         </main>
         
         <footer>
-            <p>Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.com</p>
+            <p>Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM</p>
         </footer>
     </div>
     
