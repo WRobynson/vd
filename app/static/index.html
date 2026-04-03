@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XDownloader - Vídeos sem limite e sem anúncios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="container">
+        <header>
+            <h1 class="logo">X<span>Downloader</span></h1>
+            <p class="subtitle">Baixe vídeos do Facebook, Instagram, YouTube e mais — sem nenhum pop-up irritante.</p>
+        </header>
+
+        <main>
+            <div class="input-card">
+                <input type="url" id="video-url" placeholder="Cole o link do vídeo aqui..." autocomplete="off">
+                <button id="fetch-btn">
+                    <span id="btn-text">Download</span>
+                    <div id="btn-spinner" class="spinner hidden"></div>
+                </button>
+            </div>
+
+            <div id="error-message" class="error-toast hidden"></div>
+
+            <div id="result-card" class="result-card hidden">
+                <div class="thumbnail-wrapper">
+                    <img id="vid-thumb" src="" alt="Thumbnail">
+                </div>
+                <div class="vid-details">
+                    <h2 id="vid-title">Título do Vídeo</h2>
+                    <p id="vid-meta"><span id="vid-duration"></span> • <span id="vid-source"></span></p>
+                    <div id="vid-download-options" class="download-options-container">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.com</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

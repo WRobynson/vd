@@ -1,0 +1,15 @@
+networks:
+  proxy-network:
+    external: true
+
+services:
+  vd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vd
+    restart: unless-stopped
+    volumes:
+      - ./app:/app/app
+    networks:
+      - proxy-network
