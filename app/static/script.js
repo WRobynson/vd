@@ -13,8 +13,119 @@ document.addEventListener('DOMContentLoaded', () => {
     const vidSource = document.getElementById('vid-source');
     const optionsContainer = document.getElementById('vid-download-options');
 
+    // i18n Dictionary
+    const translations = {
+        pt: {
+            flagUrl: "https://flagcdn.com/br.svg",
+            subtitle: "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>sem anúncios e popups.",
+            placeholder: "Cole o link do vídeo aqui...",
+            "btn-start": "Começar",
+            "duration-na": "Duração N/A",
+            "no-image": "Sem Imagem",
+            "download-label": "Baixar",
+            "default-quality": "(Qualidade Padrão)",
+            "error-fetch": "Ocorreu um erro ao buscar o vídeo.",
+            "error-no-url": "Não foi possível extrair um link de download direto para este vídeo.",
+            footer: "Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
+            "error-401": "Este vídeo requer login. Cookies inválidos ou expirados.",
+            "error-403": "Vídeo privado ou sem permissão de acesso."
+        },
+        en: {
+            flagUrl: "https://flagcdn.com/us.svg",
+            subtitle: "Download videos from Facebook, Instagram, YouTube and more.<br>without ads and popups.",
+            placeholder: "Paste video link here...",
+            "btn-start": "Start",
+            "duration-na": "Duration N/A",
+            "no-image": "No Image",
+            "download-label": "Download",
+            "default-quality": "(Default Quality)",
+            "error-fetch": "An error occurred while fetching the video.",
+            "error-no-url": "Could not extract a direct download link for this video.",
+            footer: "Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM",
+            "error-401": "This video requires login. Invalid or expired cookies.",
+            "error-403": "Private video or access denied."
+        },
+        es: {
+            flagUrl: "https://flagcdn.com/es.svg",
+            subtitle: "Descarga videos de Facebook, Instagram, YouTube y más.<br>sin anuncios y popups.",
+            placeholder: "Pega el enlace del video aquí...",
+            "btn-start": "Empezar",
+            "duration-na": "Duración N/A",
+            "no-image": "Sin Imagen",
+            "download-label": "Descargar",
+            "default-quality": "(Calidad Estándar)",
+            "error-fetch": "Ocurrió un error al buscar el video.",
+            "error-no-url": "No se pudo extraer un enlace de descarga directa para este video.",
+            footer: "Creado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
+            "error-401": "Este video requiere inicio de sesión. Cookies inválidas o vencidas.",
+            "error-403": "Video privado o sin permiso de acceso."
+        }
+    };
+
+    let currentLang = localStorage.getItem('vd-lang') || 
+                      (navigator.language.startsWith('pt') ? 'pt' : 
+                      (navigator.language.startsWith('es') ? 'es' : 'en'));
+
+    // UI Elements for Switcher
+    const langSwitcher = document.getElementById('language-switcher');
+    const langDropdown = document.getElementById('current-lang');
+    const currentFlagImg = document.querySelector('#current-lang-flag img');
+    const langOptions = document.querySelectorAll('.lang-option');
+
+    function updateUI() {
+        const t = translations[currentLang];
+        
+        // Update texts in the document
+        document.querySelectorAll('[data-t]').forEach(el => {
+            const key = el.getAttribute('data-t');
+            if (t[key]) el.innerHTML = t[key];
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-t-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-t-placeholder');
+            if (t[key]) el.placeholder = t[key];
+        });
+
+        // Update Dropdown Header Flag SRC
+        if (currentFlagImg) {
+            currentFlagImg.src = t.flagUrl;
+            currentFlagImg.alt = currentLang.toUpperCase();
+        }
+
+        // Update active class in options
+        langOptions.forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.lang === currentLang);
+        });
+        
+        localStorage.setItem('vd-lang', currentLang);
+    }
+
+    // Toggle Dropdown
+    langDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langSwitcher.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', () => {
+        langSwitcher.classList.remove('open');
+    });
+
+    // Option Selection
+    langOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            currentLang = opt.dataset.lang;
+            updateUI();
+            langSwitcher.classList.remove('open');
+        });
+    });
+
+    // Initialize UI
+    updateUI();
+
     function formatDuration(seconds) {
-        if (!seconds) return 'Duração N/A';
+        if (!seconds) return translations[currentLang]['duration-na'];
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);
@@ -29,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = urlInput.value.trim();
         if (!url) return;
 
-        // UI Loading state
         fetchBtn.disabled = true;
         btnText.classList.add('hidden');
         btnSpinner.classList.remove('hidden');
@@ -46,65 +156,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.detail || 'Ocorreu um erro ao buscar o vídeo.');
+                const errorKey = res.status === 401 ? 'error-401' : (res.status === 403 ? 'error-403' : null);
+                throw new Error(errorKey ? translations[currentLang][errorKey] : (data.detail || translations[currentLang]['error-fetch']));
             }
 
             if (!data.url) {
-                 throw new Error('Não foi possível extrair um link de download direto para este vídeo.');
+                 throw new Error(translations[currentLang]['error-no-url']);
             }
 
-            // Update UI with data
-            vidThumb.src = data.thumbnail || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 112" preserveAspectRatio="none"><rect width="200" height="112" fill="%23222"/><text x="100" y="56" fill="%23888" font-family="sans-serif" font-size="14" text-anchor="middle" dominant-baseline="middle">Sem Imagem</text></svg>';
+            const noImgMsg = translations[currentLang]['no-image'];
+            vidThumb.src = data.thumbnail || `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 112" preserveAspectRatio="none"><rect width="200" height="112" fill="%23222"/><text x="100" y="56" fill="%23888" font-family="sans-serif" font-size="14" text-anchor="middle" dominant-baseline="middle">${noImgMsg}</text></svg>`;
             vidTitle.textContent = data.title;
             vidDuration.textContent = formatDuration(data.duration);
             vidSource.textContent = (data.extractor || 'Web').toUpperCase();
             
-            // Mapeia os arrays de extractors devolvidos pelo yt-dlp para os nossos prefixos curtos
-            const prefixMap = {
-                'facebook': 'fb-',
-                'youtube': 'yt-',
-                'instagram': 'ig-',
-                'tiktok': 'tk-',
-                'twitter': 'tw-',
-                'vimeo': 'vm-'
-            };
             const engineName = (data.extractor || '').toLowerCase();
-            // Se o motor estiver no nosso mapa, ele usa o prefixo (ex: 'fb-'). Se não estiver, não usa nada ('').
+            const prefixMap = { 'facebook': 'fb-', 'youtube': 'yt-', 'instagram': 'ig-', 'tiktok': 'tk-', 'twitter': 'tw-', 'vimeo': 'vm-' };
             const prefix = prefixMap[engineName] || '';
 
-            // Usa o ID retornado pela API
             let videoId = data.id;
-            
-            // Se a API não achar o ID (caso do link curto do Facebook), tenta raspar manualmente da URL
             if (!videoId || videoId === 'video' || videoId.length < 3) {
-                const origUrl = urlInput.value.trim();
                 try {
-                    const parsedUrl = new URL(origUrl);
+                    const parsedUrl = new URL(url);
                     videoId = parsedUrl.searchParams.get('v') || parsedUrl.searchParams.get('id');
-                    
                     if (!videoId) {
                         const paths = parsedUrl.pathname.split('/').filter(p => p.length > 0);
-                        if (paths.length > 0) {
-                            videoId = paths[paths.length - 1]; // Pega o último trecho (ex: 18XgH4PUh9)
-                        }
+                        if (paths.length > 0) videoId = paths[paths.length - 1];
                     }
                 } catch(e) {}
-                
-                // Fallback extremo
-                if (!videoId || videoId.length < 3) {
-                    videoId = Math.random().toString(36).substring(2, 10);
-                }
+                if (!videoId || videoId.length < 3) videoId = Math.random().toString(36).substring(2, 10);
             }
 
             const customTitle = `xdownloader_${prefix}${videoId}`;
-            
-            // Gera os botões de acordo com os formatos disponíveis
-            optionsContainer.innerHTML = ''; // Limpar antigos
+            optionsContainer.innerHTML = ''; 
             
             const createBtn = (url, label) => {
                 const btn = document.createElement('a');
                 btn.className = 'download-btn';
-                btn.textContent = `Baixar ${label}`;
+                btn.textContent = `${translations[currentLang]['download-label']} ${label}`;
                 
                 const encodedUrlParam = encodeURIComponent(url);
                 const encodedTitleParam = encodeURIComponent(customTitle);
@@ -117,8 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     optionsContainer.appendChild(createBtn(f.url, f.resolution));
                 });
             } else {
-                // Caso não retorne lista de formatos (o que pode acontecer em alguns sites), usa a URL raiz
-                optionsContainer.appendChild(createBtn(data.url, '(Qualidade Padrão)'));
+                optionsContainer.appendChild(createBtn(data.url, translations[currentLang]['default-quality']));
             }
 
             resultCard.classList.remove('hidden');

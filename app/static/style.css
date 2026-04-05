@@ -55,6 +55,104 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+}
+
+.lang-switcher {
+    position: absolute;
+    top: -1rem;
+    right: 0;
+    z-index: 100;
+}
+
+.lang-dropdown {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 50%; /* Circle for just the flag */
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.lang-dropdown:hover {
+    border-color: var(--primary);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+}
+
+.lang-options {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    max-width: 60px; /* Slim for flags only */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 2rem;
+    overflow: hidden;
+    list-style: none;
+    padding: 6px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lang-switcher.open .lang-options {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 4px;
+}
+
+.lang-option:last-child {
+    margin-bottom: 0;
+}
+
+.lang-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.lang-option.active {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.lang-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.flag-img {
+    width: 24px;
+    height: 18px; /* Standard flag aspect ratio */
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .logo-wrapper {
@@ -184,6 +282,7 @@ button:active {
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

@@ -15,18 +15,42 @@
     <div class="glass-bg"></div>
     <div class="container">
         <header>
+            <div id="language-switcher" class="lang-switcher">
+                <div id="current-lang" class="lang-dropdown">
+                    <span id="current-lang-flag" class="lang-flag">
+                        <img src="https://flagcdn.com/br.svg" alt="Português" class="flag-img">
+                    </span>
+                </div>
+                <ul class="lang-options">
+                    <li class="lang-option active" data-lang="pt">
+                        <span class="lang-flag">
+                            <img src="https://flagcdn.com/br.svg" alt="Português" class="flag-img">
+                        </span>
+                    </li>
+                    <li class="lang-option" data-lang="en">
+                        <span class="lang-flag">
+                            <img src="https://flagcdn.com/us.svg" alt="English" class="flag-img">
+                        </span>
+                    </li>
+                    <li class="lang-option" data-lang="es">
+                        <span class="lang-flag">
+                            <img src="https://flagcdn.com/es.svg" alt="Español" class="flag-img">
+                        </span>
+                    </li>
+                </ul>
+            </div>
             <div class="logo-wrapper">
                 <img src="favicon.png" alt="XDownloader Icon" class="main-logo">
                 <h1 class="logo">X<span>Downloader</span></h1>
             </div>
-            <p class="subtitle">Download videos from Facebook, Instagram, YouTube and more.<br>without adds and popups.</p>
+            <p class="subtitle" data-t="subtitle">Download videos from Facebook, Instagram, YouTube and more.<br>without adds and popups.</p>
         </header>
 
         <main>
             <div class="input-card">
-                <input type="url" id="video-url" placeholder="Paste video link here..." autocomplete="off">
+                <input type="url" id="video-url" placeholder="Paste video link here..." data-t-placeholder="placeholder" autocomplete="off">
                 <button id="fetch-btn">
-                    <span id="btn-text">Start</span>
+                    <span id="btn-text" data-t="btn-start">Start</span>
                     <div id="btn-spinner" class="spinner hidden"></div>
                 </button>
             </div>
@@ -48,7 +72,7 @@
         </main>
         
         <footer>
-            <p>Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM</p>
+            <p data-t="footer">Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM</p>
         </footer>
     </div>
     
