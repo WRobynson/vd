@@ -161,5 +161,7 @@ def proxy_download(url: str, title: str = "video"):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Erro no download proxy: {str(e)}")
 
-os.makedirs("app/static", exist_ok=True)
-app.mount("/", StaticFiles(directory="app/static", html=True), name="static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+os.makedirs(STATIC_DIR, exist_ok=True)
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")

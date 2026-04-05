@@ -1,12 +1,12 @@
-const CACHE_NAME = 'xdownloader-v2';
+const CACHE_NAME = 'xdownloader-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
   '/favicon.png',
-  '/icon-192.png',
-  '/icon-512.png',
+  '/pwa-icon-192.png',
+  '/pwa-icon-512.png',
   '/manifest.json'
 ];
 
@@ -31,7 +31,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
+          if (cache !== 'xdownloader-v1' && cache !== 'xdownloader-v2' && cache !== CACHE_NAME) {
             console.log('Service Worker: Removendo cache antigo:', cache);
             return caches.delete(cache);
           }
@@ -53,7 +53,6 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Se estiver no cache, retorna. Senão, busca na rede.
       return response || fetch(event.request);
     })
   );
