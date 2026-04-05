@@ -3,21 +3,22 @@
   "short_name": "XDown",
   "description": "Video downloader for Facebook, Instagram, YouTube and more.",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
   "background_color": "#0d0f17",
   "theme_color": "#0d0f17",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/pwa-icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/pwa-icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
