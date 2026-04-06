@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // i18n Dictionary
     const translations = {
         pt: {
-            flagUrl: "https://flagcdn.com/br.svg",
+            flagUrl: "https://flagcdn.vercel.app/flags/br.svg",
             subtitle: "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>sem anúncios e popups.",
             placeholder: "Cole o link do vídeo aqui...",
             "btn-start": "Começar",
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "error-403": "Vídeo privado ou sem permissão de acesso."
         },
         en: {
-            flagUrl: "https://flagcdn.com/us.svg",
+            flagUrl: "https://flagcdn.vercel.app/flags/us.svg",
             subtitle: "Download videos from Facebook, Instagram, YouTube and more.<br>without ads and popups.",
             placeholder: "Paste video link here...",
             "btn-start": "Start",
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "error-403": "Private video or access denied."
         },
         es: {
-            flagUrl: "https://flagcdn.com/es.svg",
+            flagUrl: "https://flagcdn.vercel.app/flags/es.svg",
             subtitle: "Descarga videos de Facebook, Instagram, YouTube y más.<br>sin anuncios y popups.",
             placeholder: "Pega el enlace del video aquí...",
             "btn-start": "Empezar",

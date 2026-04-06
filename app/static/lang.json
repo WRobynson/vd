@@ -1,0 +1,50 @@
+{
+    "pt-BR": {
+        "option": "pt BR",
+        "flagUrl": "https://flagcdn.vercel.app/flags/br.svg",
+        "subtitle": "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>sem anúncios e popups.",
+        "placeholder": "Cole o link do vídeo aqui...",
+        "btn-start": "Começar",
+        "duration-na": "Duração N/A",
+        "no-image": "Sem Imagem",
+        "download-label": "Baixar",
+        "default-quality": "(Qualidade Padrão)",
+        "error-fetch": "Ocorreu um erro ao buscar o vídeo.",
+        "error-no-url": "Não foi possível extrair um link de download direto para este vídeo.",
+        "footer": "Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
+        "error-401": "Este vídeo requer login. Cookies inválidos ou expirados.",
+        "error-403": "Vídeo privado ou sem permissão de acesso."
+    },
+    "en-US": {
+        "option": "en US",
+        "flagUrl": "https://flagcdn.vercel.app/flags/us.svg",
+        "subtitle": "Download videos from Facebook, Instagram, YouTube and more.<br>without ads and popups.",
+        "placeholder": "Paste video link here...",
+        "btn-start": "Start",
+        "duration-na": "Duration N/A",
+        "no-image": "No Image",
+        "download-label": "Download",
+        "default-quality": "(Default Quality)",
+        "error-fetch": "An error occurred while fetching the video.",
+        "error-no-url": "Could not extract a direct download link for this video.",
+        "footer": "Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM",
+        "error-401": "This video requires login. Invalid or expired cookies.",
+        "error-403": "Private video or access denied."
+    },
+    "es-ES": {
+        "option": "es ES",
+        "flagUrl": "https://flagcdn.vercel.app/flags/es.svg",
+        "subtitle": "Descarga videos de Facebook, Instagram, YouTube y más.<br>sin anuncios y popups.",
+        "placeholder": "Pega el enlace del video aquí...",
+        "btn-start": "Empezar",
+        "duration-na": "Duración N/A",
+        "no-image": "Sin Imagen",
+        "download-label": "Descargar",
+        "default-quality": "(Calidad Estándar)",
+        "error-fetch": "Ocurrió un error al buscar el video.",
+        "error-no-url": "No se pudo extraer un enlace de descarga directa para este video.",
+        "footer": "Creado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
+        "error-401": "Este video requiere inicio de sesión. Cookies inválidas o vencidas.",
+        "error-403": "Video privado o sin permiso de acceso."
+    }
+}

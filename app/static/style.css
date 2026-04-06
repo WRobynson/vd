@@ -92,15 +92,15 @@ header {
     position: absolute;
     top: calc(100% + 0.75rem);
     right: 0;
-    max-width: 60px; /* Slim for flags only */
+    min-width: 80px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-radius: 2rem;
+    border-radius: 1rem;
     overflow: hidden;
     list-style: none;
-    padding: 6px;
+    padding: 2px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     opacity: 0;
     transform: translateY(10px);
@@ -115,44 +115,45 @@ header {
 }
 
 .lang-option {
-    display: flex;
+    /* display: flex; */
     align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     transition: var(--transition);
-    margin-bottom: 4px;
-}
-
-.lang-option:last-child {
-    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .lang-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-bright);
+    transform: translateX(-3px);
 }
 
 .lang-option.active {
-    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
 }
 
 .lang-flag {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 50%;
 }
 
 .flag-img {
-    width: 24px;
-    height: 18px; /* Standard flag aspect ratio */
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: block;
 }
 
 .logo-wrapper {
