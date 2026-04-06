@@ -46,5 +46,21 @@
         "footer": "Creado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
         "error-401": "Este video requiere inicio de sesión. Cookies inválidas o vencidas.",
         "error-403": "Video privado o sin permiso de acceso."
+    },
+    "fr-FR": {
+        "option": "fr FR",
+        "flagUrl": "https://flagcdn.vercel.app/flags/fr.svg",
+        "subtitle": "Téléchargez des vidéos de Facebook, Instagram, YouTube et plus.<br>sans publicités et popups.",
+        "placeholder": "Collez le lien de la vidéo ici...",
+        "btn-start": "Commencer",
+        "duration-na": "Durée N/A",
+        "no-image": "Pas d'image",
+        "download-label": "Télécharger",
+        "default-quality": "(Qualité Standard)",
+        "error-fetch": "Une erreur s'est produite lors de la récupération de la vidéo.",
+        "error-no-url": "Impossible d'extraire un lien de téléchargement direct pour cette vidéo.",
+        "footer": "Créé pour l'environnement XmatriX.<br>&copy; 2026 Robynson.COM",
+        "error-401": "Cette vidéo nécessite une connexion. Cookies invalides ou expirés.",
+        "error-403": "Vidéo privée ou accès refusé."
     }
 }

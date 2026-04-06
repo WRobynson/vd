@@ -115,22 +115,22 @@ header {
 }
 
 .lang-option {
-    /* display: flex; */
+    display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 0.8rem;
-    border-radius: 0.5rem;
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
     cursor: pointer;
     transition: var(--transition);
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
 }
 
 .lang-option:hover {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-bright);
-    transform: translateX(-3px);
+    transform: translateX(3px);
 }
 
 .lang-option.active {
@@ -147,6 +147,7 @@ header {
     flex-shrink: 0;
     overflow: hidden;
     border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .flag-img {

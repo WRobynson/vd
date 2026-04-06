@@ -13,67 +13,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const vidSource = document.getElementById('vid-source');
     const optionsContainer = document.getElementById('vid-download-options');
 
-    // i18n Dictionary
-    const translations = {
-        pt: {
-            flagUrl: "https://flagcdn.vercel.app/flags/br.svg",
-            subtitle: "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>sem anúncios e popups.",
-            placeholder: "Cole o link do vídeo aqui...",
-            "btn-start": "Começar",
-            "duration-na": "Duração N/A",
-            "no-image": "Sem Imagem",
-            "download-label": "Baixar",
-            "default-quality": "(Qualidade Padrão)",
-            "error-fetch": "Ocorreu um erro ao buscar o vídeo.",
-            "error-no-url": "Não foi possível extrair um link de download direto para este vídeo.",
-            footer: "Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
-            "error-401": "Este vídeo requer login. Cookies inválidos ou expirados.",
-            "error-403": "Vídeo privado ou sem permissão de acesso."
-        },
-        en: {
-            flagUrl: "https://flagcdn.vercel.app/flags/us.svg",
-            subtitle: "Download videos from Facebook, Instagram, YouTube and more.<br>without ads and popups.",
-            placeholder: "Paste video link here...",
-            "btn-start": "Start",
-            "duration-na": "Duration N/A",
-            "no-image": "No Image",
-            "download-label": "Download",
-            "default-quality": "(Default Quality)",
-            "error-fetch": "An error occurred while fetching the video.",
-            "error-no-url": "Could not extract a direct download link for this video.",
-            footer: "Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM",
-            "error-401": "This video requires login. Invalid or expired cookies.",
-            "error-403": "Private video or access denied."
-        },
-        es: {
-            flagUrl: "https://flagcdn.vercel.app/flags/es.svg",
-            subtitle: "Descarga videos de Facebook, Instagram, YouTube y más.<br>sin anuncios y popups.",
-            placeholder: "Pega el enlace del video aquí...",
-            "btn-start": "Empezar",
-            "duration-na": "Duración N/A",
-            "no-image": "Sin Imagen",
-            "download-label": "Descargar",
-            "default-quality": "(Calidad Estándar)",
-            "error-fetch": "Ocurrió un error al buscar el video.",
-            "error-no-url": "No se pudo extraer un enlace de descarga directa para este video.",
-            footer: "Creado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
-            "error-401": "Este video requiere inicio de sesión. Cookies inválidas o vencidas.",
-            "error-403": "Video privado o sin permiso de acceso."
-        }
-    };
-
-    let currentLang = localStorage.getItem('vd-lang') || 
-                      (navigator.language.startsWith('pt') ? 'pt' : 
-                      (navigator.language.startsWith('es') ? 'es' : 'en'));
+    // i18n Global State
+    let translations = {};
+    let currentLang = 'pt-BR'; // Default fallback
 
     // UI Elements for Switcher
     const langSwitcher = document.getElementById('language-switcher');
     const langDropdown = document.getElementById('current-lang');
     const currentFlagImg = document.querySelector('#current-lang-flag img');
-    const langOptions = document.querySelectorAll('.lang-option');
+    const langOptionsList = document.getElementById('lang-options-list');
+
+    async function initI18n() {
+        try {
+            const response = await fetch('lang.json');
+            translations = await response.json();
+            
+            // 1. Determine starting language
+            const savedLang = localStorage.getItem('vd-lang');
+            const browserLang = navigator.language;
+            
+            if (savedLang && translations[savedLang]) {
+                currentLang = savedLang;
+            } else {
+                // Try to match browser language (exact or prefix)
+                const matched = Object.keys(translations).find(k => k === browserLang || k.startsWith(browserLang.split('-')[0]));
+                if (matched) currentLang = matched;
+            }
+
+            // 2. Build the dropdown options dynamically
+            renderLangOptions();
+
+            // 3. Initial UI update
+            updateUI();
+
+        } catch (error) {
+            console.error('Failed to load translations:', error);
+            // Fallback can be hardcoded here if critical, but we expect lang.json to exist.
+        }
+    }
+
+    function renderLangOptions() {
+        langOptionsList.innerHTML = ''; // Clear just in case
+        
+        Object.entries(translations).forEach(([key, langData]) => {
+            const li = document.createElement('li');
+            li.className = `lang-option ${key === currentLang ? 'active' : ''}`;
+            li.dataset.lang = key;
+            
+            li.innerHTML = `
+                <span class="lang-text">${langData.option}</span>
+            `;
+            
+            li.addEventListener('click', () => {
+                currentLang = key;
+                updateUI();
+                langSwitcher.classList.remove('open');
+            });
+            
+            langOptionsList.appendChild(li);
+        });
+    }
 
     function updateUI() {
         const t = translations[currentLang];
+        if (!t) return;
         
         // Update texts in the document
         document.querySelectorAll('[data-t]').forEach(el => {
@@ -90,11 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Dropdown Header Flag SRC
         if (currentFlagImg) {
             currentFlagImg.src = t.flagUrl;
-            currentFlagImg.alt = currentLang.toUpperCase();
+            currentFlagImg.alt = currentLang;
         }
 
-        // Update active class in options
-        langOptions.forEach(opt => {
+        // Update active class in options list
+        const allOptions = langOptionsList.querySelectorAll('.lang-option');
+        allOptions.forEach(opt => {
             opt.classList.toggle('active', opt.dataset.lang === currentLang);
         });
         
@@ -112,20 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         langSwitcher.classList.remove('open');
     });
 
-    // Option Selection
-    langOptions.forEach(opt => {
-        opt.addEventListener('click', () => {
-            currentLang = opt.dataset.lang;
-            updateUI();
-            langSwitcher.classList.remove('open');
-        });
-    });
-
-    // Initialize UI
-    updateUI();
+    // Initialize
+    initI18n();
 
     function formatDuration(seconds) {
-        if (!seconds) return translations[currentLang]['duration-na'];
+        if (!seconds) return translations[currentLang]['duration-na'] || 'N/A';
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);

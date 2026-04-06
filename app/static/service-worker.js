@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xdownloader-v10';
+const CACHE_NAME = 'xdownloader-v11';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -7,7 +7,8 @@ const ASSETS_TO_CACHE = [
   '/favicon.png',
   '/pwa-icon-192.png',
   '/pwa-icon-512.png',
-  '/manifest.json'
+  '/manifest.json',
+  '/lang.json'
 ];
 
 // Instalação - Faz cache inicial dos arquivos
