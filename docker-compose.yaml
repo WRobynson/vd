@@ -11,5 +11,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./app:/app/app
+    env_file:
+      - .env
+    environment:
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     networks:
       - proxy-network

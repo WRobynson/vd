@@ -2,7 +2,7 @@
     "pt-BR": {
         "option": "pt BR",
         "flagUrl": "https://flagcdn.vercel.app/flags/br.svg",
-        "subtitle": "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>sem anúncios e popups.",
+        "subtitle": "Baixe vídeos do Facebook, Instagram, YouTube e mais.<br>Sem anúncios. Sem popups irritantes.",
         "placeholder": "Cole o link do vídeo aqui...",
         "btn-start": "Começar",
         "duration-na": "Duração N/A",
@@ -12,13 +12,13 @@
         "error-fetch": "Ocorreu um erro ao buscar o vídeo.",
         "error-no-url": "Não foi possível extrair um link de download direto para este vídeo.",
         "footer": "Criado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
-        "error-401": "Este vídeo requer login. Cookies inválidos ou expirados.",
-        "error-403": "Vídeo privado ou sem permissão de acesso."
+        "error-401": "Este vídeo requer login. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Atualize os cookies aqui</a>.",
+        "error-403": "Vídeo privado ou sem permissão. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Tente atualizar os cookies</a>."
     },
     "en-US": {
         "option": "en US",
         "flagUrl": "https://flagcdn.vercel.app/flags/us.svg",
-        "subtitle": "Download videos from Facebook, Instagram, YouTube and more.<br>without ads and popups.",
+        "subtitle": "Download videos from Facebook, Instagram, YouTube and more.<br>Without ads. Without annoying popups.",
         "placeholder": "Paste video link here...",
         "btn-start": "Start",
         "duration-na": "Duration N/A",
@@ -28,13 +28,13 @@
         "error-fetch": "An error occurred while fetching the video.",
         "error-no-url": "Could not extract a direct download link for this video.",
         "footer": "Created for the XmatriX environment.<br>&copy; 2026 Robynson.COM",
-        "error-401": "This video requires login. Invalid or expired cookies.",
-        "error-403": "Private video or access denied."
+        "error-401": "This video requires login. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Update cookies here</a>.",
+        "error-403": "Private video or access denied. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Try updating cookies</a>."
     },
     "es-ES": {
         "option": "es ES",
         "flagUrl": "https://flagcdn.vercel.app/flags/es.svg",
-        "subtitle": "Descarga videos de Facebook, Instagram, YouTube y más.<br>sin anuncios y popups.",
+        "subtitle": "Descarga videos de Facebook, Instagram, YouTube y más.<br>Sin anuncios. Sin popups irritantes.",
         "placeholder": "Pega el enlace del video aquí...",
         "btn-start": "Empezar",
         "duration-na": "Duración N/A",
@@ -44,13 +44,13 @@
         "error-fetch": "Ocurrió un error al buscar el video.",
         "error-no-url": "No se pudo extraer un enlace de descarga directa para este video.",
         "footer": "Creado para o ambiente XmatriX.<br>&copy; 2026 Robynson.COM",
-        "error-401": "Este video requiere inicio de sesión. Cookies inválidas o vencidas.",
-        "error-403": "Video privado o sin permiso de acceso."
+        "error-401": "Este video requiere inicio de sesión. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Actualice las cookies aquí</a>.",
+        "error-403": "Video privado o sin permiso. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Intente actualizar las cookies</a>."
     },
     "fr-FR": {
         "option": "fr FR",
         "flagUrl": "https://flagcdn.vercel.app/flags/fr.svg",
-        "subtitle": "Téléchargez des vidéos de Facebook, Instagram, YouTube et plus.<br>sans publicités et popups.",
+        "subtitle": "Téléchargez des vidéos de Facebook, Instagram, YouTube et plus.<br>Sans publicités. Sans popups irritants.",
         "placeholder": "Collez le lien de la vidéo ici...",
         "btn-start": "Commencer",
         "duration-na": "Durée N/A",
@@ -60,7 +60,7 @@
         "error-fetch": "Une erreur s'est produite lors de la récupération de la vidéo.",
         "error-no-url": "Impossible d'extraire un lien de téléchargement direct pour cette vidéo.",
         "footer": "Créé pour l'environnement XmatriX.<br>&copy; 2026 Robynson.COM",
-        "error-401": "Cette vidéo nécessite une connexion. Cookies invalides ou expirés.",
-        "error-403": "Vidéo privée ou accès refusé."
+        "error-401": "Cette vidéo nécessite une connexion. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Mettre à jour les cookies ici</a>.",
+        "error-403": "Vidéo privée ou accès refusé. <a href='/cookies/' style='color: var(--primary); text-decoration: underline;'>Essayez de mettre à jour les cookies</a>."
     }
 }

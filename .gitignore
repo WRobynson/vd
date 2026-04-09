@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+app/cookies.txt
+!app/cache/.gitkeep
+app/cache/*

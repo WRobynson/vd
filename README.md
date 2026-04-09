@@ -15,3 +15,4 @@ O **XDownloader** suporta download de vídeos que exigem login:
 1. Use a extensão **"Get cookies.txt LOCALLY"** no seu navegador enquanto logado na rede social.
 2. Exporte os cookies e cole o conteúdo no arquivo: `apps/vd/app/cookies.txt`.
 3. O sistema detectará os cookies automaticamente para o próximo download.
+4. Isso deve ser feito periodicamente, pois os cookies expiram.

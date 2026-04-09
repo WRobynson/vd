@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Admin - XDownloader</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../icon-192.png">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            display: none; /* Escondido por padrão */
+        }
+        .login-card {
+            max-width: 400px;
+            margin: 10rem auto;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        .login-card h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .login-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .admin-header h1 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .admin-header p {
+            color: rgba(255,255,255,0.6);
+        }
+        #cookie-paster {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            color: #34d399; /* Green text for a terminal look */
+            padding: 1.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        #cookie-paster:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .admin-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        #status-msg {
+            margin-top: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow bottom-right"></div>
+    
+    <!-- Tela de Login -->
+    <div id="login-screen" class="login-card glass">
+        <h2>🔒 Admin Access</h2>
+        <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.6);">Insira a senha de administração</p>
+        <input type="password" id="admin-pass" class="login-input" placeholder="Admin password...">
+        <button id="login-btn" class="admin-btn" style="width: 100%;">Entrar</button>
+        <div id="login-error" style="color: #ef4444; margin-top: 1rem; display: none;">Senha incorreta.</div>
+    </div>
+
+    <!-- Container Principal -->
+    <div id="admin-main" class="admin-container glass">
+        <div class="admin-header">
+            <h1 id="admin-title">🔄 Cookie Refresh</h1>
+            <p id="admin-desc">Cole o conteúdo do seu arquivo Netscape cookie aqui.</p>
+        </div>
+        
+        <textarea id="cookie-paster" placeholder="# Netscape HTTP Cookie File..."></textarea>
+        
+        <div class="admin-actions">
+            <button id="update-btn" class="admin-btn">Atualizar Servidor</button>
+            <a href="/" class="admin-btn" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);">Voltar ao App</a>
+        </div>
+        
+        <div id="status-msg"></div>
+    </div>
+
+    <script>
+        const loginScreen = document.getElementById('login-screen');
+        const adminMain = document.getElementById('admin-main');
+        const passInput = document.getElementById('admin-pass');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+
+        const textarea = document.getElementById('cookie-paster');
+        const updateBtn = document.getElementById('update-btn');
+        const statusMsg = document.getElementById('status-msg');
+
+        // Lógica de Autenticação
+        async function checkAuth() {
+            const savedPass = sessionStorage.getItem('admin_pass');
+            if (savedPass) {
+                if (await verifyPass(savedPass)) {
+                    showAdmin();
+                }
+            }
+        }
+
+        async function verifyPass(pass) {
+            try {
+                const res = await fetch('/api/admin/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass })
+                });
+                return res.ok;
+            } catch (e) { return false; }
+        }
+
+        function showAdmin() {
+            loginScreen.style.display = 'none';
+            adminMain.style.display = 'block';
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            const pass = passInput.value;
+            loginBtn.disabled = true;
+            if (await verifyPass(pass)) {
+                sessionStorage.setItem('admin_pass', pass);
+                showAdmin();
+            } else {
+                loginError.style.display = 'block';
+                passInput.value = '';
+            }
+            loginBtn.disabled = false;
+        });
+
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        // Lógica de Update
+        updateBtn.addEventListener('click', async () => {
+            const content = textarea.value.trim();
+            const password = sessionStorage.getItem('admin_pass');
+
+            if (!content) {
+                showStatus('Por favor, cole algum conteúdo.', 'error');
+                return;
+            }
+
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Processando...';
+
+            try {
+                const response = await fetch('/api/admin/update_cookies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus(data.message, 'success');
+                    textarea.value = '';
+                } else {
+                    showStatus(data.detail || 'Ocorreu um erro.', 'error');
+                }
+            } catch (error) {
+                showStatus('Erro de conexão com o servidor.', 'error');
+            } finally {
+                updateBtn.disabled = false;
+                updateBtn.textContent = 'Atualizar Servidor';
+            }
+        });
+
+        function showStatus(msg, type) {
+            statusMsg.textContent = msg;
+            statusMsg.className = type;
+            statusMsg.style.display = 'block';
+            setTimeout(() => {
+                statusMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
