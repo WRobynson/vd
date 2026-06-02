@@ -115,113 +115,153 @@ def get_video_info(request: URLRequest):
             except Exception:
                 pass
 
-    ydl_opts = {
-        'format': 'best', 
-        'quiet': True,
-        'no_warnings': True,
-        'extract_flat': False,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'ios', 'web'],
-                'include_dash_manifest': [False],
-                'include_hls_manifest': [False],
-            }
-        },
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-            'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
-        }
-    }
-    
-    # Suporte para baixar vídeos privados usando cookies do navegador
-    cookie_path = 'app/cookies.txt'
-    if os.path.exists(cookie_path) and os.path.getsize(cookie_path) > 200:
-        ydl_opts['cookiefile'] = cookie_path
-        # Mantém Referer se houver cookies
-        ydl_opts['http_headers']['Referer'] = 'https://www.youtube.com/'
-        
+    # Detecta o domínio base da URL para usar como Referer correto
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(request.url, download=False)
-            
-            if 'entries' in info_dict:
-                info_dict = info_dict['entries'][0]
+        from urllib.parse import urlparse
+        parsed = urlparse(request.url)
+        base_url = f"{parsed.scheme}://{parsed.netloc}/"
+    except Exception:
+        base_url = 'https://www.facebook.com/'
 
-            formats_list = []
-            if 'formats' in info_dict:
-                for f in info_dict['formats']:
-                    vcodec = str(f.get('vcodec', '')).lower()
-                    acodec = str(f.get('acodec', '')).lower()
-                    ext = str(f.get('ext', '')).lower()
-                    
-                    # O yt-dlp define como 'none' explícito quando não há a trilha correspondente (vídeos DASH soltos)
-                    is_video_only = (vcodec != 'none' and vcodec != '') and (acodec == 'none')
-                    is_audio_only = (vcodec == 'none') and (acodec != 'none' and acodec != '')
-                    
-                    # Filtra arquivos que sejam apenas áudio ou apenas vídeo, mas aceita os indefinidos (Facebook sd/hd)
-                    if not is_video_only and not is_audio_only and ext in ['mp4', 'webm']:
-                        height = f.get('height') or 0
-                        res = f.get('resolution') or f.get('format_id') or f.get('format') or 'Padrão'
-                        
-                        if 'audio' in str(res).lower():
-                            continue
-                        
-                        # Transforma 'sd' e 'hd' para maiúsculas ('SD', 'HD')
-                        res_str = str(res)
-                        if res_str.lower() in ['sd', 'hd']:
-                            res_str = res_str.upper()
-                            
-                        res_label = res_str
-                        if f.get('format_note') and res_str.lower() not in str(f.get('format_note')).lower():
-                            res_label += f" ({f.get('format_note')})"
-                            
-                        formats_list.append({
-                            'url': f.get('url'),
-                            'resolution': res_label.strip(),
-                            'height': int(height)
-                        })
-                            
-            # Filtra duplicados pela resolução, mantendo o mais recente da iteração
-            unique_formats = {}
-            for f in formats_list:
-                unique_formats[f['resolution']] = f
-                
-            sorted_formats = sorted(list(unique_formats.values()), key=lambda x: x['height'], reverse=True)
+    cookie_path = 'app/cookies.txt'
+    has_cookies = os.path.exists(cookie_path) and os.path.getsize(cookie_path) > 200
+    is_facebook = 'facebook.com' in request.url or 'fb.watch' in request.url
 
-            result = {
-                "title": info_dict.get('title', 'Vídeo'),
-                "id": info_dict.get('id', 'video'),
-                "thumbnail": info_dict.get('thumbnail'),
-                "duration": info_dict.get('duration'),
-                "url": info_dict.get('url'),
-                "extractor": info_dict.get('extractor'),
-                "formats": sorted_formats
+    def build_ydl_opts(use_cookies: bool) -> dict:
+        opts = {
+            'format': 'best',
+            'quiet': True,
+            'no_warnings': True,
+            'extract_flat': False,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'ios', 'web'],
+                    'include_dash_manifest': [False],
+                    'include_hls_manifest': [False],
+                }
+            },
+            # NÃO sobrescrever User-Agent globalmente para não quebrar extratores específicos
+            'http_headers': {
+                'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
             }
-            
-            # Grava no cache
-            try:
-                with open(cache_path, 'w', encoding='utf-8') as f:
-                    json.dump(result, f, ensure_ascii=False)
-            except:
-                pass
+        }
+        if use_cookies:
+            opts['cookiefile'] = cookie_path
+            opts['http_headers']['Referer'] = base_url
+        return opts
 
-            return result
+    # Estratégia de extração com fallback de cookies:
+    # 1. Se for Facebook, tenta SEM cookies primeiro. (Facebook público sem cookies entrega títulos corretos e MP4s prontos).
+    # 2. Se não for Facebook ou se a tentativa sem cookies falhar, usa os cookies (se disponíveis).
+    
+    info_dict = None
+    extraction_error = None
+    
+    # Primeira tentativa
+    use_cookies_first_try = has_cookies and not is_facebook
+    opts = build_ydl_opts(use_cookies=use_cookies_first_try)
+    
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info_dict = ydl.extract_info(request.url, download=False)
     except Exception as e:
-        erro = str(e).lower()
+        extraction_error = e
+        # Se falhou e não tínhamos usado cookies mas eles estão disponíveis, tenta uma segunda vez COM cookies
+        if not use_cookies_first_try and has_cookies:
+            try:
+                opts_retry = build_ydl_opts(use_cookies=True)
+                with yt_dlp.YoutubeDL(opts_retry) as ydl:
+                    info_dict = ydl.extract_info(request.url, download=False)
+                    extraction_error = None # Sucesso!
+            except Exception as retry_e:
+                extraction_error = retry_e
 
+    # Se ambas falharam, trata o erro
+    if info_dict is None:
+        erro = str(extraction_error).lower()
         if "login required" in erro or "cookies" in erro or "not logged in" in erro:
             raise HTTPException(
                 status_code=401,
                 detail="Este vídeo requer login. Cookies inválidos ou expirados."
             )
-
         if "private" in erro or "permission" in erro:
             raise HTTPException(
                 status_code=403,
                 detail="Vídeo privado ou sem permissão de acesso."
             )
+        raise HTTPException(status_code=400, detail=str(extraction_error))
 
-        raise HTTPException(status_code=400, detail=str(e))
+    # Processamento dos metadados e formatos extraídos com sucesso
+    if 'entries' in info_dict:
+        info_dict = info_dict['entries'][0]
+
+    formats_list = []
+    if 'formats' in info_dict:
+        for f in info_dict['formats']:
+            vcodec = str(f.get('vcodec', '')).lower()
+            acodec = str(f.get('acodec', '')).lower()
+            ext = str(f.get('ext', '')).lower()
+            
+            is_video_only = (vcodec != 'none' and vcodec != '') and (acodec == 'none')
+            is_audio_only = (vcodec == 'none') and (acodec != 'none' and acodec != '')
+            
+            # Filtra arquivos que sejam apenas áudio ou apenas vídeo, mas aceita os indefinidos (Facebook sd/hd)
+            if not is_video_only and not is_audio_only and ext in ['mp4', 'webm']:
+                height = f.get('height') or 0
+                res = f.get('resolution') or f.get('format_id') or f.get('format') or 'Padrão'
+                
+                if 'audio' in str(res).lower():
+                    continue
+                
+                res_str = str(res)
+                if res_str.lower() in ['sd', 'hd']:
+                    res_str = res_str.upper()
+                    
+                res_label = res_str
+                if f.get('format_note') and res_str.lower() not in str(f.get('format_note')).lower():
+                    res_label += f" ({f.get('format_note')})"
+                    
+                formats_list.append({
+                    'url': f.get('url'),
+                    'resolution': res_label.strip(),
+                    'height': int(height)
+                })
+
+    # Fallback para plataformas que usam DASH (ex: Facebook com cookies onde as streams vêm separadas)
+    if not formats_list and info_dict.get('url'):
+        height = info_dict.get('height') or 0
+        res = info_dict.get('resolution') or (f"{info_dict.get('width')}x{height}" if info_dict.get('width') else 'Melhor qualidade')
+        formats_list.append({
+            'url': info_dict.get('url'),
+            'resolution': str(res),
+            'height': int(height)
+        })
+                    
+    # Filtra duplicados pela resolução, mantendo o mais recente da iteração
+    unique_formats = {}
+    for f in formats_list:
+        unique_formats[f['resolution']] = f
+        
+    sorted_formats = sorted(list(unique_formats.values()), key=lambda x: x['height'], reverse=True)
+
+    result = {
+        "title": info_dict.get('title', 'Vídeo'),
+        "id": info_dict.get('id', 'video'),
+        "thumbnail": info_dict.get('thumbnail'),
+        "duration": info_dict.get('duration'),
+        "url": info_dict.get('url'),
+        "extractor": info_dict.get('extractor'),
+        "formats": sorted_formats
+    }
+    
+    # Grava no cache
+    try:
+        with open(cache_path, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False)
+    except:
+        pass
+
+    return result
 
 @app.get("/api/download")
 def proxy_download(url: str, title: str = "video"):

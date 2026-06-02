@@ -15,5 +15,7 @@ services:
       - .env
     environment:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
     networks:
       - proxy-network
